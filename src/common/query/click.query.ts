@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 
-import { ClickCount } from '@submodule/entities';
+import { Click } from '@submodule/entities';
 
-export class ClickCountQuery {
-  public static async increaseClickCountByUserId(repo: Repository<ClickCount>, userId: number) {
+export class ClickQuery {
+  public static async increaseClickCountByUserId(repo: Repository<Click>, userId: number) {
     await repo
       .createQueryBuilder()
       .update()

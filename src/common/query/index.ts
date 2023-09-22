@@ -1,2 +1,2 @@
 export * from './user.query';
-export * from './click-count.query';
+export * from './click.query';

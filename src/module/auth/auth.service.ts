@@ -4,11 +4,11 @@ import { JwtService } from '@nestjs/jwt';
 
 import { User } from '@submodule/entities';
 import { ExceptionMessage, JwtAuthPayload } from '@app/persistence/constants';
-
+import { JwtConfig } from '@app/persistence/configs';
 import { UserQuery } from '@app/common/query';
+import { comparePassword, hasingPassword } from '@app/common/utils';
 import { SignUpDto, SignInDto } from '@app/dto/auth';
 import { ResponseDto } from '@app/dto/response';
-import { JwtConfig } from '@app/persistence/configs';
 
 @Injectable()
 export class AuthService {
@@ -33,17 +33,27 @@ export class AuthService {
   async signUp(dto: SignUpDto) {
     const userRepository = this.dataSource.getRepository(User);
 
-    if (await UserQuery.hasUserByName(userRepository, dto.name)) {
+    if (await UserQuery.hasUserByName(userRepository, dto.username)) {
       throw new BadRequestException(ExceptionMessage.ALREADY_EXIST_USER);
     }
 
-    return this.issueTokens(await UserQuery.createUser(userRepository, dto.name));
+    return this.issueTokens(
+      await UserQuery.createUser(userRepository, {
+        username: dto.username,
+        name: dto.name,
+        password: hasingPassword(dto.password),
+      }),
+    );
   }
 
   async signIn(dto: SignInDto) {
-    const user = await UserQuery.findUserByName(this.dataSource.getRepository(User), dto.name);
+    const user = await UserQuery.findUserByName(this.dataSource.getRepository(User), dto.username);
 
     if (user == null) {
+      throw new UnauthorizedException(ExceptionMessage.UNAUTHORIZED);
+    }
+
+    if (!comparePassword(user.password, dto.password)) {
       throw new UnauthorizedException(ExceptionMessage.UNAUTHORIZED);
     }
 

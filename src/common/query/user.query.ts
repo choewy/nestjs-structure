@@ -1,29 +1,26 @@
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
-import { ClickCount, User } from '@submodule/entities';
+import { Click, User } from '@submodule/entities';
 
 export class UserQuery {
-  public static async hasUserByName(repo: Repository<User>, name: string) {
+  public static async hasUserByName(repo: Repository<User>, username: string) {
     return !!(await repo.findOne({
-      select: ['id', 'name'],
-      where: { name },
+      select: ['id', 'username'],
+      where: { username },
     }));
-  }
-
-  public static async findUserByName(repo: Repository<User>, name: string) {
-    return repo.findOneBy({ name });
   }
 
   public static async findUserById(repo: Repository<User>, id: number) {
     return repo.findOneBy({ id });
   }
 
-  public static async createUser(repo: Repository<User>, name: string) {
-    const user = new User();
+  public static async findUserByName(repo: Repository<User>, username: string) {
+    return repo.findOneBy({ username });
+  }
 
-    user.name = name;
-    user.clickCount = new ClickCount();
+  public static async createUser(repo: Repository<User>, user: DeepPartial<User>) {
+    user.click = new Click();
 
-    return repo.save(user);
+    return repo.save(repo.create(user));
   }
 }
