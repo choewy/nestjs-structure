@@ -1,14 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller, Patch } from '@nestjs/common';
 
 import { UserService } from './user.service';
-import { CreateUserDto } from '@app/dto/user';
+import { JwtAuthPayload, SignedUser } from '@app/persistence/constants';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async createUser(@Body() body: CreateUserDto) {
-    return this.userService.createUser(body);
+  @SkipThrottle()
+  @Patch('click')
+  async increaseUserClickCount(@SignedUser() user: JwtAuthPayload) {
+    return this.userService.increaseUserClickCount(user.id);
   }
 }
