@@ -1,3 +1,11 @@
+export enum ConfigPrefix {
+  VERSION = 'VERSION',
+  DB_MASTER = 'DB_MASTER',
+  DB_SLAVE = 'DB_SLAVE',
+  JWT = 'JWT',
+  BCRYPT = 'BCRYPT',
+}
+
 export enum ResponseResult {
   SUCCESS = 'success',
   FAILED = 'failed',

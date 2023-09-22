@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { Click, DBConfig, User } from '@submodule/persistence';
+import { DBMasterConfig, DBSlaveConfig } from '@submodule/persistence';
+
 import { JwtConfig } from './persistence/configs';
 import { JwtAuthGuard, JwtAuthGuardStrategy } from './persistence/guards';
+import { ConfigPrefix, entities } from './persistence/constants';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,9 +19,10 @@ import { AuthModule } from './module/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot(new DBConfig('DB').getOptions([User, Click])),
-    JwtModule.register(new JwtConfig('JWT').getOptions()),
     ThrottlerModule.forRoot([{ ttl: 10000, limit: 30 }]),
+    JwtModule.register(new JwtConfig(ConfigPrefix.JWT).getOptions()),
+    TypeOrmModule.forRoot(new DBMasterConfig(ConfigPrefix.DB_MASTER).getOptions(entities)),
+    TypeOrmModule.forRoot(new DBSlaveConfig(ConfigPrefix.DB_SLAVE).getOptions(entities)),
     UserModule,
     AuthModule,
   ],
