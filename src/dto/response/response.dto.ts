@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ResponseResult } from '@app/persistence';
+import { ResponseResult } from '@app/persistence/constants';
 
 export class ResponseDto<D> {
   result: ResponseResult;
