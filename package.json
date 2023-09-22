@@ -81,8 +81,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/submodule/",
-      "<rootDir>/src/"
+      "<rootDir>/test/unit"
     ],
     "moduleNameMapper": {
       "^@submodule(|/.*)$": "<rootDir>/submodule/src/$1",

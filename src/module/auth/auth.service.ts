@@ -4,7 +4,8 @@ import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } fr
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { DataSourceName, User } from '@submodule/entities';
+import { User } from '@submodule/entities';
+import { DataSourceName } from '@submodule/persistence';
 
 import { ExceptionMessage, JwtAuthPayload } from '@app/persistence/constants';
 import { JwtConfig } from '@app/persistence/configs';
