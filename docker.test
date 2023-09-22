@@ -1,12 +1,20 @@
 FROM node:20
 
+ARG DB_SYNCHRONIZE
+ARG DB_DROP_SCHEMA
+
 EXPOSE 3000
 
 WORKDIR /var/app
+
 COPY . /var/app
 
 RUN rm .env
 RUN mv .env.test .env
+
+RUN echo -e \n >> .env
+RUN echo DB_MASTER_SYNCHRONIZE=$DB_SYNCHRONIZE >> .env
+RUN echo DB_MASTER_DROP_SCHEMA=$DB_DROP_SCHEMA >> .env
 
 RUN npm ci
 RUN npm run build

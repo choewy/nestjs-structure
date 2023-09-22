@@ -8,6 +8,7 @@
   "scripts": {
     "submodule:pull": "git submodule foreach git pull origin master",
     "docker": "docker-compose up --build",
+    "nginx:test": "node ./test/nginx-test.js",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -30,6 +31,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/throttler": "^5.0.0",
     "@nestjs/typeorm": "^10.0.0",
+    "axios": "^1.5.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

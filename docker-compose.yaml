@@ -36,6 +36,9 @@ services:
     build:
       context: .
       dockerfile: docker.test
+      args:
+        - DB_SYNCHRONIZE=true
+        - DB_DROP_SCHEMA=true
     ports:
       - 3001:3000
 
@@ -46,6 +49,9 @@ services:
     build:
       context: .
       dockerfile: docker.test
+      args:
+        - DB_SYNCHRONIZE=false
+        - DB_DROP_SCHEMA=false
     ports:
       - 3002:3000
 
@@ -56,6 +62,9 @@ services:
     build:
       context: .
       dockerfile: docker.test
+      args:
+        - DB_SYNCHRONIZE=false
+        - DB_DROP_SCHEMA=false
     ports:
       - 3003:3000
 
@@ -66,5 +75,8 @@ services:
     build:
       context: .
       dockerfile: docker.test
+      args:
+        - DB_SYNCHRONIZE=false
+        - DB_DROP_SCHEMA=false
     ports:
       - 3004:3000
