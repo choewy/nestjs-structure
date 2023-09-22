@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "submodule:pull": "git submodule foreach git pull origin master",
+    "docker": "docker-compose up --build -d",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

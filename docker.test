@@ -1,0 +1,15 @@
+FROM node:18
+
+EXPOSE 3000
+
+WORKDIR /var/app
+
+COPY . /var/app
+
+RUN rm .env
+RUN mv .env.test .env
+
+RUN npm ci
+RUN npm run build
+
+CMD ["node", "dist/main.js"]

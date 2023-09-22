@@ -1,6 +1,6 @@
 # development
-.temp
-.env
+**.temp
+**.env
 
 # compiled output
 /dist
