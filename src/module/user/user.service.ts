@@ -1,17 +1,31 @@
-import { DataSource } from 'typeorm';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 
-import { ClickQuery } from '@app/common/query';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { User } from '@submodule/entities';
+import { DataSourceName } from '@submodule/persistence';
+import { ExceptionMessage } from '@app/persistence/constants';
 import { ResponseDto } from '@app/dto/response';
-import { Click } from '@submodule/entities';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    @InjectRepository(User, DataSourceName.SLAVE)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-  async increaseUserClickCount(id: number) {
-    await ClickQuery.of(this.dataSource.getRepository(Click)).increaseClickCountByUserId(id);
+  async getProfile(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
 
-    return ResponseDto.success(HttpStatus.OK, null);
+    if (!user) {
+      throw new NotFoundException(ExceptionMessage.NOT_FOUND_USER);
+    }
+
+    return ResponseDto.success(HttpStatus.OK, {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+    });
   }
 }

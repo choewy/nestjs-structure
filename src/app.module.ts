@@ -15,6 +15,7 @@ import { AppService } from './app.service';
 
 import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
+import { ClickModule } from './module/click/click.module';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { AuthModule } from './module/auth/auth.module';
     JwtModule.register(new JwtConfig(ConfigPrefix.JWT).getOptions()),
     TypeOrmModule.forRoot(new DBMasterConfig(ConfigPrefix.DB_MASTER).getOptions(entities)),
     TypeOrmModule.forRoot(new DBSlaveConfig(ConfigPrefix.DB_SLAVE).getOptions(entities)),
-    UserModule,
     AuthModule,
+    UserModule,
+    ClickModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtAuthGuardStrategy, JwtAuthGuard, ThrottlerGuard],

@@ -41,12 +41,12 @@ export class AuthService {
   }
 
   async signUp(dto: SignUpDto) {
-    if (await UserQuery.of(this.userRepository).hasUserByName(dto.username)) {
+    if (await UserQuery.use(this.userRepository).hasUserByName(dto.username)) {
       throw new BadRequestException(ExceptionMessage.ALREADY_EXIST_USER);
     }
 
     return this.issueTokens(
-      await UserQuery.of(this.dataSource.getRepository(User)).createUser({
+      await UserQuery.use(this.dataSource.getRepository(User)).createUser({
         username: dto.username,
         name: dto.name,
         password: hasingPassword(dto.password),
@@ -55,7 +55,7 @@ export class AuthService {
   }
 
   async signIn(dto: SignInDto) {
-    const user = await UserQuery.of(this.userRepository).findUserByName(dto.username);
+    const user = await UserQuery.use(this.userRepository).findUserByName(dto.username);
 
     if (user == null) {
       throw new UnauthorizedException(ExceptionMessage.UNAUTHORIZED);

@@ -3,7 +3,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Click, User } from '@submodule/entities';
 
 export class UserQuery {
-  public static of(repo: Repository<User>) {
+  public static use(repo: Repository<User>) {
     return new UserQuery(repo);
   }
 
