@@ -9,8 +9,14 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Public()
+  @Get()
+  version() {
+    return this.appService.getVersion();
+  }
+
+  @Public()
   @Get('health')
-  health(): boolean {
-    return true;
+  health() {
+    return;
   }
 }

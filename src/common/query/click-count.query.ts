@@ -7,7 +7,7 @@ export class ClickCountQuery {
     await repo
       .createQueryBuilder()
       .update()
-      .set({ count: () => 'click_count.count + 1' })
+      .set({ count: () => 'count + 1' })
       .where({ userId })
       .execute();
   }
