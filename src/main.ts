@@ -5,6 +5,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { JwtAuthGuard } from './persistence/guards';
 
 import { AppModule } from './app.module';
+import { ServerConfig } from './persistence/configs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +21,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
+  const { port } = new ServerConfig().getOptions();
+
+  await app.listen(port);
 }
 
 bootstrap();

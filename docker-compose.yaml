@@ -16,12 +16,55 @@ services:
     ports:
       - 33062:3306
 
-  app:
-    container_name: app
+  nginx:
+    image: nginx
+    container_name: nginx
+    depends_on:
+      - app01
+      - app02
+      - app03
+      - app04
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/apps.conf
+    ports:
+      - 30000:80
+
+  app01:
+    container_name: app01
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: docker.test
+    ports:
+      - 3001:3000
+
+  app02:
+    container_name: app02
     depends_on:
       - db
+    build:
+      context: .
+      dockerfile: docker.test
     ports:
-      - 30000:3000
+      - 3002:3000
+
+  app03:
+    container_name: app03
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: docker.test
+    ports:
+      - 3003:3000
+
+  app04:
+    container_name: app04
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: docker.test
+    ports:
+      - 3004:3000
