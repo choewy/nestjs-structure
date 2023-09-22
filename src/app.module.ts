@@ -19,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(new DBConfig('DB').getOptions([User, ClickCount])),
     JwtModule.register(new JwtConfig('JWT').getOptions()),
-    ThrottlerModule.forRoot([{ ttl: 30000, limit: 10 }]),
+    ThrottlerModule.forRoot([{ ttl: 10000, limit: 30 }]),
     UserModule,
     AuthModule,
   ],
