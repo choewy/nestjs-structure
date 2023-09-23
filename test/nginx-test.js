@@ -8,15 +8,17 @@ const pick = (length) => {
   return Math.floor(Math.random() * length);
 };
 
-const main = async () => {
-  const ids = new Array(50).fill(null).map((_, i) => i);
+const getTokens = async (length) => {
+  const idxs = new Array(length).fill(null).map((_, i) => i);
 
   let tokens = [];
 
-  for (const id of ids) {
+  for (const idx of idxs) {
+    const userId = idx + 1;
+
     const cretentials = {
-      username: `username_${id}`,
-      password: `password_${id}`,
+      username: `username_${userId}`,
+      password: `password_${userId}`,
     };
 
     let token = '';
@@ -26,10 +28,10 @@ const main = async () => {
 
       token = data.data.accessToken;
     } catch (e) {
-      console.log(`${id} : signin failed - ${JSON.stringify(e.response.data)}`);
+      console.log(`${userId} : signin failed - ${JSON.stringify(e.response.data)}`);
 
-      const { data } = await api.post('/auth/signup', { ...cretentials, name: `name_${id}` }).catch((e) => {
-        console.log(`${id} : signup failed - ${JSON.stringify(e.response.data)}`);
+      const { data } = await api.post('/auth/signup', { ...cretentials, name: `name_${userId}` }).catch((e) => {
+        console.log(`${userId} : signup failed - ${JSON.stringify(e.response.data)}`);
 
         return { data: { data: { accessToken: null } } };
       });
@@ -37,35 +39,30 @@ const main = async () => {
       token = data.data.accessToken;
     }
 
-    tokens[id] = token;
+    tokens[idx] = token;
   }
 
-  tokens = tokens.filter((token) => !!token);
+  return tokens.filter((token) => !!token);
+};
 
-  const length = tokens.length;
+const sendClicks = async (tokens, sendCount, pickCount) => {
+  const tokenCount = tokens.length;
 
-  if (length === 0) {
-    return;
-  }
-
-  const count = 2000;
-
+  let requestCount = 0;
   let success = 0;
   let failed = 0;
 
-  let requestCount = 0;
-
   while (true) {
-    if (requestCount === count) {
+    if (requestCount === sendCount) {
       break;
     }
 
     requestCount += 1;
 
-    const targetIdxs = new Array(5).fill(0).map(() => pick(length));
+    const targetIdxs = new Array(pickCount).fill(0).map(() => pick(tokenCount));
     const targetTokens = targetIdxs.map((idx) => tokens[idx]);
 
-    console.log(`${((requestCount / count) * 100).toFixed(2)}%`);
+    console.log(`${((requestCount / sendCount) * 100).toFixed(2)}%`);
 
     for (const token of targetTokens) {
       await api
@@ -81,7 +78,29 @@ const main = async () => {
     }
   }
 
-  console.log({ requestCount, success, failed });
+  return {
+    tokenCount,
+    pickCount,
+    sendCount,
+    results: {
+      requestCount,
+      success,
+      failed,
+    },
+  };
+};
+
+const main = async () => {
+  const tokens = await getTokens(50);
+
+  if (tokens.length === 0) {
+    return;
+  }
+
+  const tryCount = 4000;
+  const pickCount = 5;
+
+  console.log(await sendClicks(tokens, tryCount, pickCount));
 };
 
 main();
