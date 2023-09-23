@@ -11,14 +11,24 @@ services:
       MYSQL_DATABASE: local
       MYSQL_ALLOW_EMPTY_PASSWORD: true
     volumes:
-      - .temp/data:/var/lib/mysql
-      - .temp/disk:/var/lib/disk
+      - ./temp/mysql/data:/var/lib/mysql
+      - ./temp/mysql/disk:/var/lib/disk
     ports:
       - 33062:3306
 
-  nginx:
+  rd:
+    image: redis:6.2
+    container_name: rd
+    command: redis-server --port 6379
+    ports:
+      - 6381:6379
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./temp/redis/data:/data
+
+  ng:
     image: nginx
-    container_name: nginx
+    container_name: ng
     depends_on:
       - app01
       - app02
@@ -33,6 +43,7 @@ services:
     container_name: app01
     depends_on:
       - db
+      - rd
     build:
       context: .
       dockerfile: docker.test
@@ -46,6 +57,7 @@ services:
     container_name: app02
     depends_on:
       - db
+      - rd
     build:
       context: .
       dockerfile: docker.test
@@ -59,6 +71,7 @@ services:
     container_name: app03
     depends_on:
       - db
+      - rd
     build:
       context: .
       dockerfile: docker.test
@@ -72,6 +85,7 @@ services:
     container_name: app04
     depends_on:
       - db
+      - rd
     build:
       context: .
       dockerfile: docker.test
