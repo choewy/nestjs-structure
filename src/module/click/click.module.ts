@@ -6,10 +6,11 @@ import { DataSourceName } from '@submodule/persistence/enums';
 
 import { ClickController } from './click.controller';
 import { ClickService } from './click.service';
+import { ClickGateway } from './click.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Click], DataSourceName.SLAVE)],
   controllers: [ClickController],
-  providers: [ClickService],
+  providers: [ClickGateway, ClickService],
 })
 export class ClickModule {}

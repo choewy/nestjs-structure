@@ -4,6 +4,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 
 import { ServerConfig } from '@submodule/persistence/configs';
 
+import { IoRedisIoAdapter } from './persistence/adapters';
 import { JwtAuthGuard } from './persistence/guards';
 import { ConfigPrefix } from './persistence/constants';
 
@@ -12,6 +13,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useWebSocketAdapter(await new IoRedisIoAdapter(app).connect());
   app.useGlobalGuards(app.get(JwtAuthGuard), app.get(ThrottlerGuard));
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,6 +24,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.enableCors();
 
   const { port, host } = new ServerConfig(ConfigPrefix.SERVER).getOptions();
 
