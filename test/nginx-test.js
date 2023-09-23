@@ -4,11 +4,14 @@ const api = axios.create({
   baseURL: 'http://localhost:30000',
 });
 
-const main = async () => {
-  const count = 1000;
+const pick = (length) => {
+  return Math.floor(Math.random() * length);
+};
 
-  const ids = [1, 2, 3, 4, 5];
-  const tokens = {};
+const main = async () => {
+  const ids = new Array(50).fill(null).map((_, i) => i);
+
+  let tokens = [];
 
   for (const id of ids) {
     const cretentials = {
@@ -19,13 +22,14 @@ const main = async () => {
     let token = '';
 
     try {
-      const { data } = await api.post('/auth/signup', { ...cretentials, name: `name_${id}` });
+      const { data } = await api.post('/auth/signin', cretentials);
+
       token = data.data.accessToken;
     } catch (e) {
-      console.log(`${id} : signup failed - ${JSON.stringify(e.response.data)}`);
+      console.log(`${id} : signin failed - ${JSON.stringify(e.response.data)}`);
 
-      const { data } = await api.post('/auth/signin', cretentials).catch((e) => {
-        console.log(`${id} : signin failed - ${JSON.stringify(e.response.data)}`);
+      const { data } = await api.post('/auth/signup', { ...cretentials, name: `name_${id}` }).catch((e) => {
+        console.log(`${id} : signup failed - ${JSON.stringify(e.response.data)}`);
 
         return { data: { data: { accessToken: null } } };
       });
@@ -33,16 +37,21 @@ const main = async () => {
       token = data.data.accessToken;
     }
 
-    if (token) {
-      tokens[id] = token;
-    } else {
-      delete tokens[id];
-    }
+    tokens[id] = token;
   }
 
-  if (Object.keys(tokens).length === 0) {
+  tokens = tokens.filter((token) => !!token);
+
+  const length = tokens.length;
+
+  if (length === 0) {
     return;
   }
+
+  const count = 2000;
+
+  let success = 0;
+  let failed = 0;
 
   let requestCount = 0;
 
@@ -53,17 +62,26 @@ const main = async () => {
 
     requestCount += 1;
 
-    await Promise.all(
-      Object.entries(tokens).map(([id, token]) =>
-        api
-          .patch('/click', null, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(() => `${id} : success`)
-          .catch(() => `${id} : failed`),
-      ),
-    );
+    const targetIdxs = new Array(5).fill(0).map(() => pick(length));
+    const targetTokens = targetIdxs.map((idx) => tokens[idx]);
+
+    console.log(`${((requestCount / count) * 100).toFixed(2)}%`);
+
+    for (const token of targetTokens) {
+      await api
+        .patch('/click', null, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(() => {
+          success += 1;
+        })
+        .catch(() => {
+          failed += 1;
+        });
+    }
   }
+
+  console.log({ requestCount, success, failed });
 };
 
 main();
