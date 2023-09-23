@@ -4,9 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { DBMasterConfig, DBSlaveConfig } from '@submodule/persistence';
+import { DBMasterConfig, DBSlaveConfig, JwtConfig } from '@submodule/persistence/configs';
 
-import { JwtConfig } from './persistence/configs';
 import { JwtAuthGuard, JwtAuthGuardStrategy } from './persistence/guards';
 import { ConfigPrefix, entities } from './persistence/constants';
 

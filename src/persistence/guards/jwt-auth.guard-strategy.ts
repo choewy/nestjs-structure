@@ -3,8 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { JwtConfig } from '../configs';
-import { ExceptionMessage, JwtAuthPayload } from '../constants';
+import { ConfigPrefix, ExceptionMessage, JwtAuthPayload } from '../constants';
+import { JwtConfig } from '@submodule/persistence/configs';
 
 @Injectable()
 export class JwtAuthGuardStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +12,7 @@ export class JwtAuthGuardStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: new JwtConfig('JWT').getOptions().secret,
+      secretOrKey: new JwtConfig(ConfigPrefix.JWT).getSecretOption(),
     });
   }
 

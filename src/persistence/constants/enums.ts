@@ -1,9 +1,10 @@
 export enum ConfigPrefix {
+  SERVER = 'SERVER',
   VERSION = 'VERSION',
   DB_MASTER = 'DB_MASTER',
   DB_SLAVE = 'DB_SLAVE',
+  REDIS = 'REDIS',
   JWT = 'JWT',
-  BCRYPT = 'BCRYPT',
 }
 
 export enum ResponseResult {

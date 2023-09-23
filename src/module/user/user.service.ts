@@ -4,7 +4,8 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from '@submodule/entities';
-import { DataSourceName } from '@submodule/persistence';
+import { DataSourceName } from '@submodule/persistence/enums';
+
 import { ExceptionMessage } from '@app/persistence/constants';
 import { ResponseDto } from '@app/dto/response';
 

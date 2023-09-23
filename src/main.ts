@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
-import { JwtAuthGuard } from './persistence/guards';
+import { ServerConfig } from '@submodule/persistence/configs';
 
+import { JwtAuthGuard } from './persistence/guards';
 import { AppModule } from './app.module';
-import { ServerConfig } from './persistence/configs';
+import { ConfigPrefix } from './persistence/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,7 +22,7 @@ async function bootstrap() {
     }),
   );
 
-  const { port } = new ServerConfig().getOptions();
+  const { port } = new ServerConfig(ConfigPrefix.SERVER).getOptions();
 
   await app.listen(port);
 }

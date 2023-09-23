@@ -5,10 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from '@submodule/entities';
-import { DataSourceName } from '@submodule/persistence';
+import { DataSourceName } from '@submodule/persistence/enums';
+import { JwtConfig } from '@submodule/persistence/configs';
 
-import { ExceptionMessage, JwtAuthPayload } from '@app/persistence/constants';
-import { JwtConfig } from '@app/persistence/configs';
+import { ConfigPrefix, ExceptionMessage, JwtAuthPayload } from '@app/persistence/constants';
+
 import { UserQuery } from '@app/common/query';
 import { comparePassword, hasingPassword } from '@app/common/utils';
 import { SignUpDto, SignInDto } from '@app/dto/auth';
@@ -24,17 +25,13 @@ export class AuthService {
   ) {}
 
   private issueTokens(user: User) {
-    const jwtOptions = new JwtConfig('JWT').getOptions();
-    const secret = jwtOptions.secret;
-    const signOptions = jwtOptions.signOptions;
-
     const accessToken = this.jwtService.sign(
       {
         id: user.id,
         username: user.username,
         name: user.name,
       } as JwtAuthPayload,
-      { secret, ...signOptions },
+      new JwtConfig(ConfigPrefix.JWT).getSignOptions(),
     );
 
     return ResponseDto.success(HttpStatus.OK, { accessToken });

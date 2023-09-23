@@ -4,7 +4,7 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Click } from '@submodule/entities';
-import { DataSourceName } from '@submodule/persistence';
+import { DataSourceName } from '@submodule/persistence/enums';
 
 import { ClickQuery } from '@app/common/query';
 import { ResponseDto } from '@app/dto/response';
